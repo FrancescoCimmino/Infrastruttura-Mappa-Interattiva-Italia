@@ -2,27 +2,36 @@ document.addEventListener("DOMContentLoaded", function () {
     const map = document.getElementById("italy-map");
     const infoBox = document.getElementById("info-box");
 
-    // Carica l'SVG
+    // The fetch() method starts the process of fetching a resource from a server
+    // upload the SVG file
     fetch("assets/italia.svg")
         .then(response => {
             if (!response.ok) {
-                throw new Error(`Errore nel caricamento dell'SVG: ${response.status}`);
+    // The throw statement allows you to create a custom error
+                throw new Error(`Error during SVG File fetching: ${response.status}`);
             }
             return response.text();
         })
         .then(svgContent => {
-            console.log("SVG caricato con successo");
+    //        console.log("SVG uploaded correctly");
+            
+            // insert SVG in the container (containers are elements that contain other elements)
             const container = document.getElementById("map-container");
+            // in the SVG file there is a ID tag and a Name (of the Region) tag, better use the second one to be visualised
+            
             container.innerHTML = svgContent;
             const svg = container.querySelector("svg");
+            // the querySelector() method returns the first element that matches a specified CSS selector(s) in the document
             if (!svg) {
-                throw new Error("Elemento SVG non trovato nel contenuto");
+                throw new Error(`SVG not found in the container with ID: ${container.id}`);
             }
+            
             svg.setAttribute("width", "100%");
             
-            // Inserisci gli stili direttamente nell'SVG
-            const styleElement = document.createElementNS("http://www.w3.org/2000/svg", "style");
-            styleElement.textContent = `
+            // Styles importing
+            const styleElement = document.createElement("style");
+            styleElement.textContent = 
+            `
                 .region:hover {
                     fill: #6ce65a !important;
                     stroke-width: 1.5px;
@@ -39,7 +48,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 .region.animating {
                     animation: gentlePulse 0.3s ease-in-out;
                 }                
-                
+            // test scale HERE    
+
                 @keyframes gentlePulse {
                     0% { transform: scale(1); }
                     50% { transform: scale(1.04); }
@@ -48,49 +58,36 @@ document.addEventListener("DOMContentLoaded", function () {
             `;
             svg.appendChild(styleElement);
             
-            // Seleziona le regioni (paths o altri elementi nell'SVG)
+            // Select the regions
+            // Path is a SVG element that is used to draw lines, shapes or outlines (the region borders)
             const regions = svg.querySelectorAll("path");
             console.log(`Trovate ${regions.length} regioni nell'SVG`);
-            
-            if (regions.length === 0) {
-                // Prova con un selettore più ampio se non trova path
-                const alternativeRegions = svg.querySelectorAll("path, polygon, rect, g > *");
-                console.log(`Trovate ${alternativeRegions.length} regioni con selettore alternativo`);
-                
-                // Se ci sono elementi con il selettore alternativo, usali
-                if (alternativeRegions.length > 0) {
-                    setupRegionInteractions(alternativeRegions);
-                } else {
-                    console.error("ERRORE: Nessuna regione trovata nell'SVG!");
-                }
-            } else {
-                setupRegionInteractions(regions);
+            // setup the interactions for the regions (regions are from a reliable source, no need to check for null)
+            setupRegionInteractions(regions);
             }
-        })
-        .catch(error => {
-            console.error(`ERRORE: ${error.message}`);
-        });
+        )
     
-    // Configura le interazioni per le regioni
+    // configuration of the interactions for the regions
     function setupRegionInteractions(regions) {
         regions.forEach((region, index) => {
             // Assicurati che ogni regione abbia un ID
             if (!region.id) {
                 region.id = `region-${index + 1}`;
             }
-            
-            // Imposta il colore di base prima di aggiungere la classe
+            // color settings
             region.setAttribute("fill", "#41974e");
             region.setAttribute("stroke", "#ffffff");
             region.setAttribute("stroke-width", "1");
-            
-            // Aggiungi la classe per lo stile di base
+            // adding class to the region in order to style it
             region.classList.add("region");
             
-            // Gestisci hover
+            // Hover effect setup, "mouseover" and "mouseout" are events that are triggered when the mouse is over or out of an element
             region.addEventListener("mouseover", function() {
-                const regionName = this.getAttribute("name") || this.querySelector("title")?.textContent || this.getAttribute("id") || "Regione";
+            // || means "or", if the first condition is false, the second one is checked
+                const regionName = this.getAttribute("name") 
+            // || this.querySelector("title")?.textContent || this.getAttribute("id") || "Regione";     (not sure is necessary due to reliable mapping)
                 infoBox.textContent = regionName;
+            // fill "hovered" with a color
                 this.setAttribute("fill", "#6ce65a");
             });
             
@@ -101,12 +98,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             });
             
-            // Gestisci click
+            // Selection effect setup, "click" is an event that is triggered when the mouse is clicked on an element
             region.addEventListener("click", function(e) {
-                const regionName = this.getAttribute("name") || this.querySelector("title")?.textContent || this.getAttribute("id") || "Regione";
-                console.log(`Click su: ${regionName}`);
-                
-                // Toggle della classe selected
+                const regionName = this.getAttribute("name")
+            // || this.querySelector("title")?.textContent || this.getAttribute("id") || "Regione";
+
+                // Toggle selected class
                 if (this.classList.contains("selected")) {
                     this.classList.remove("selected");
                     this.setAttribute("fill", "#41974e");
@@ -115,48 +112,14 @@ document.addEventListener("DOMContentLoaded", function () {
                     this.setAttribute("fill", "#41974e");
                 }
                 
-                // Aggiungi temporaneamente la classe per l'animazione
+                // temporarily add a class to animate the selection
                 this.classList.add("animating");
                 
-                // Rimuovi la classe di animazione dopo che è completa
+                // remove animating class after a short delay (in millisecnods)
                 setTimeout(() => {
                     this.classList.remove("animating");
                 }, 300);
-                
-                // Riordina le regioni per avere quelle selezionate sopra
-                reorderRegions();
             });
         });
-    }
-    
-    // Funzione per riordinare le regioni
-    function reorderRegions() {
-        console.log("Riordino le regioni selezionate...");
-        
-        const svg = document.querySelector("#italy-map-svg");
-        if (!svg) {
-            console.error("ERRORE: SVG non trovato per il riordinamento");
-            return;
         }
-        
-        const regions = svg.querySelectorAll(".region");
-        const parent = regions[0]?.parentNode;
-        
-        if (!parent) {
-            console.error("ERRORE: Parent node non trovato");
-            return;
-        }
-        
-        // Prima le regioni non selezionate
-        Array.from(regions)
-            .filter(r => !r.classList.contains("selected"))
-            .forEach(region => parent.appendChild(region));
-        
-        // Poi le regioni selezionate in modo che appaiano sopra
-        Array.from(regions)
-            .filter(r => r.classList.contains("selected"))
-            .forEach(region => parent.appendChild(region));
-        
-        console.log("Regioni riordinate completate");
-    }
-});
+    });
