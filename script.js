@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const map = document.getElementById("italy-map");
     const infoBox = document.getElementById("info-box");
 
-    // Carica l'SVG direttamente nel DOM invece di usare object
+    // Carica l'SVG
     fetch("assets/italia.svg")
         .then(response => {
             if (!response.ok) {
@@ -12,18 +12,12 @@ document.addEventListener("DOMContentLoaded", function () {
         })
         .then(svgContent => {
             console.log("SVG caricato con successo");
-            
-            // Inserisci l'SVG direttamente nel container
             const container = document.getElementById("map-container");
             container.innerHTML = svgContent;
-            
-            // Ora possiamo manipolare l'SVG direttamente nel DOM
             const svg = container.querySelector("svg");
             if (!svg) {
                 throw new Error("Elemento SVG non trovato nel contenuto");
             }
-            
-            // Assicurati che l'SVG riempia il container
             svg.setAttribute("width", "100%");
             
             // Inserisci gli stili direttamente nell'SVG
