@@ -17,5 +17,4 @@ KNOWN ISSUES - STUFF TO IMPROVE
 - animazione selezione da migliorare
 
 
-
-![Mappa Interattiva Italia - Versione 1](https://github.com/user-attachments/assets/de872560-49b7-4b00-bd0d-15a53e3fc0e6)
+https://github.com/FrancescoCimmino/Infrastruttura-Mappa-Interattiva-Italia/blob/main/EXAMPLE.PNG
