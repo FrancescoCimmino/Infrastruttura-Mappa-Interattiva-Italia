@@ -9,3 +9,12 @@ fonte della mappa: inizialmente cercato su ISTAT ma la suddivisione non teneva c
 Modifiche alla mappa effettuate (.svg): qualche nome è stato riscritto in italiano e ho modificato i colori
 
 
+KNOWN ISSUES - STUFF TO IMPROVE
+
+- dare spessore alle regioni, in modo che sembrino dei solidi
+- occasionali sovrapposizioni
+- trasparenze indesiderate
+- animazione selezione da migliorare
+
+
+
