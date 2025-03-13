@@ -1,0 +1,79 @@
+body {
+    font-family: 'Titillium Web', sans-serif;
+    text-align: center;
+    background-color: #ffffff ;
+    margin: 0;
+    padding: 20px;
+  }
+  
+  h1 {
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  #map-container {
+    width: 70%;
+    margin: 0 auto;
+    position: relative;
+    border: 1px solid #000000;
+    border-radius: 4px;
+    background-color: #e6eaf0;
+    padding: 10px;
+    /* box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    /* Supporto per le trasformazioni 3D nell'SVG */
+    transform-style: preserve-3d;
+    perspective: 1000px;
+  }
+  
+  #info-box {
+    margin-top: 20px;
+    padding: 10px 20px;
+    border: 1px solid #333;
+    border-radius: 5px;
+    background-color: #fff;
+    display: inline-block;
+    min-width: 200px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    font-weight: bold;
+  }
+  
+  .legend {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .color-box {
+    width: 20px;
+    height: 20px;
+    border: 1px solid #333;
+    display: inline-block;
+  }
+
+  .color-box.hover {
+    background-color: #6ce65a;
+  }
+  
+  .color-box.selected {
+    background-color: #41974e;
+    box-shadow: 0 4px 3px rgba(0,0,0,0.3);
+    transform: translateY(-2px);
+  }
+  
+  /* Assicurati che l'SVG riempia il contenitore */
+  #italy-map-svg {
+    width: 100%;
+    height: auto;
+    max-height: 80vh;
+    /* Supporto per migliore rendering degli effetti */
+    transform-style: preserve-3d;
+  }
+  
