@@ -15,6 +15,4 @@ KNOWN ISSUES - STUFF TO IMPROVE
 - occasionali sovrapposizioni
 - trasparenze indesiderate
 - animazione selezione da migliorare
-
-
-https://github.com/FrancescoCimmino/Infrastruttura-Mappa-Interattiva-Italia/blob/main/EXAMPLE.PNG
+![EXAMPLE](https://github.com/user-attachments/assets/140d16c8-0139-410b-bb15-3e1db3055d0e)
