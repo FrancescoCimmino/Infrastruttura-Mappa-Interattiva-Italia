@@ -1,0 +1,337 @@
+[
+    {
+        "Progetto": "P1",
+        "Regione": "Abruzzo",
+        "Importo": " 1,650,258.00 € "
+    },
+    {
+        "Progetto": "P2",
+        "Regione": "Basilicata",
+        "Importo": " 6,457,135.00 € "
+    },
+    {
+        "Progetto": "P3",
+        "Regione": "Calabria",
+        "Importo": " 5,993,076.00 € "
+    },
+    {
+        "Progetto": "P4",
+        "Regione": "Campania",
+        "Importo": " 652,447.00 € "
+    },
+    {
+        "Progetto": "P5",
+        "Regione": "Emilia-Romagna",
+        "Importo": " 9,956,570.00 € "
+    },
+    {
+        "Progetto": "P6",
+        "Regione": "Friuli-Venezia Giulia",
+        "Importo": " 7,328,557.00 € "
+    },
+    {
+        "Progetto": "P7",
+        "Regione": "Lazio",
+        "Importo": " 9,489,164.00 € "
+    },
+    {
+        "Progetto": "P8",
+        "Regione": "Liguria",
+        "Importo": " 6,635,545.00 € "
+    },
+    {
+        "Progetto": "P9",
+        "Regione": "Lombardia",
+        "Importo": " 7,181,240.00 € "
+    },
+    {
+        "Progetto": "P10",
+        "Regione": "Marche",
+        "Importo": " 9,841,031.00 € "
+    },
+    {
+        "Progetto": "P11",
+        "Regione": "Molise",
+        "Importo": " 8,258,524.00 € "
+    },
+    {
+        "Progetto": "P12",
+        "Regione": "Piemonte",
+        "Importo": " 6,572,874.00 € "
+    },
+    {
+        "Progetto": "P13",
+        "Regione": "Puglia",
+        "Importo": " 3,811,905.00 € "
+    },
+    {
+        "Progetto": "P14",
+        "Regione": "Sardegna",
+        "Importo": " 4,388,164.00 € "
+    },
+    {
+        "Progetto": "P15",
+        "Regione": "Sicilia",
+        "Importo": " 9,889,031.00 € "
+    },
+    {
+        "Progetto": "P16",
+        "Regione": "Toscana",
+        "Importo": " 2,761,543.00 € "
+    },
+    {
+        "Progetto": "P17",
+        "Regione": "Trentino-Alto Adige",
+        "Importo": " 9,717,928.00 € "
+    },
+    {
+        "Progetto": "P18",
+        "Regione": "Umbria",
+        "Importo": " 2,437,000.00 € "
+    },
+    {
+        "Progetto": "P19",
+        "Regione": "Valle D'Aosta",
+        "Importo": " 2,684,838.00 € "
+    },
+    {
+        "Progetto": "P20",
+        "Regione": "Veneto",
+        "Importo": " 752,330.00 € "
+    },
+    {
+        "Progetto": "P21",
+        "Regione": "Emilia-Romagna",
+        "Importo": " 7,704,595.00 € "
+    },
+    {
+        "Progetto": "P22",
+        "Regione": "Friuli-Venezia Giulia",
+        "Importo": " 4,862,661.00 € "
+    },
+    {
+        "Progetto": "P23",
+        "Regione": "Lazio",
+        "Importo": " 6,205,622.00 € "
+    },
+    {
+        "Progetto": "P24",
+        "Regione": "Liguria",
+        "Importo": " 3,311,032.00 € "
+    },
+    {
+        "Progetto": "P25",
+        "Regione": "Lombardia",
+        "Importo": " 6,449,026.00 € "
+    },
+    {
+        "Progetto": "P26",
+        "Regione": "Marche",
+        "Importo": " 699,445.00 € "
+    },
+    {
+        "Progetto": "P27",
+        "Regione": "Molise",
+        "Importo": " 4,320,501.00 € "
+    },
+    {
+        "Progetto": "P28",
+        "Regione": "Piemonte",
+        "Importo": " 6,903,019.00 € "
+    },
+    {
+        "Progetto": "P29",
+        "Regione": "Puglia",
+        "Importo": " 1,159,330.00 € "
+    },
+    {
+        "Progetto": "P30",
+        "Regione": "Sardegna",
+        "Importo": " 5,563,773.00 € "
+    },
+    {
+        "Progetto": "P31",
+        "Regione": "Sicilia",
+        "Importo": " 3,658,659.00 € "
+    },
+    {
+        "Progetto": "P32",
+        "Regione": "Toscana",
+        "Importo": " 4,040,062.00 € "
+    },
+    {
+        "Progetto": "P33",
+        "Regione": "Trentino-Alto Adige",
+        "Importo": " 3,804,117.00 € "
+    },
+    {
+        "Progetto": "P34",
+        "Regione": "Umbria",
+        "Importo": " 7,396,196.00 € "
+    },
+    {
+        "Progetto": "P35",
+        "Regione": "Calabria",
+        "Importo": " 5,364,594.00 € "
+    },
+    {
+        "Progetto": "P36",
+        "Regione": "Campania",
+        "Importo": " 9,898,881.00 € "
+    },
+    {
+        "Progetto": "P37",
+        "Regione": "Emilia-Romagna",
+        "Importo": " 286,233.00 € "
+    },
+    {
+        "Progetto": "P38",
+        "Regione": "Friuli-Venezia Giulia",
+        "Importo": " 3,620,609.00 € "
+    },
+    {
+        "Progetto": "P39",
+        "Regione": "Lazio",
+        "Importo": " 5,248,417.00 € "
+    },
+    {
+        "Progetto": "P40",
+        "Regione": "Liguria",
+        "Importo": " 2,826,957.00 € "
+    },
+    {
+        "Progetto": "P41",
+        "Regione": "Lombardia",
+        "Importo": " 9,887,327.00 € "
+    },
+    {
+        "Progetto": "P42",
+        "Regione": "Marche",
+        "Importo": " 8,892,499.00 € "
+    },
+    {
+        "Progetto": "P43",
+        "Regione": "Molise",
+        "Importo": " 9,810,918.00 € "
+    },
+    {
+        "Progetto": "P44",
+        "Regione": "Piemonte",
+        "Importo": " 2,284,472.00 € "
+    },
+    {
+        "Progetto": "P45",
+        "Regione": "Puglia",
+        "Importo": " 673,078.00 € "
+    },
+    {
+        "Progetto": "P46",
+        "Regione": "Sardegna",
+        "Importo": " 3,487,008.00 € "
+    },
+    {
+        "Progetto": "P47",
+        "Regione": "Sicilia",
+        "Importo": " 1,290,959.00 € "
+    },
+    {
+        "Progetto": "P48",
+        "Regione": "Abruzzo",
+        "Importo": " 5,947,135.00 € "
+    },
+    {
+        "Progetto": "P49",
+        "Regione": "Basilicata",
+        "Importo": " 4,339,806.00 € "
+    },
+    {
+        "Progetto": "P50",
+        "Regione": "Calabria",
+        "Importo": " 7,093,986.00 € "
+    },
+    {
+        "Progetto": "P51",
+        "Regione": "Campania",
+        "Importo": " 4,201,526.00 € "
+    },
+    {
+        "Progetto": "P52",
+        "Regione": "Emilia-Romagna",
+        "Importo": " 4,737,626.00 € "
+    },
+    {
+        "Progetto": "P53",
+        "Regione": "Friuli-Venezia Giulia",
+        "Importo": " 1,411,383.00 € "
+    },
+    {
+        "Progetto": "P54",
+        "Regione": "Lazio",
+        "Importo": " 8,807,773.00 € "
+    },
+    {
+        "Progetto": "P55",
+        "Regione": "Liguria",
+        "Importo": " 2,127,570.00 € "
+    },
+    {
+        "Progetto": "P56",
+        "Regione": "Lombardia",
+        "Importo": " 5,706,644.00 € "
+    },
+    {
+        "Progetto": "P57",
+        "Regione": "Marche",
+        "Importo": " 7,325,764.00 € "
+    },
+    {
+        "Progetto": "P58",
+        "Regione": "Abruzzo",
+        "Importo": " 4,879,498.00 € "
+    },
+    {
+        "Progetto": "P59",
+        "Regione": "Basilicata",
+        "Importo": " 2,754,025.00 € "
+    },
+    {
+        "Progetto": "P60",
+        "Regione": "Calabria",
+        "Importo": " 8,237,127.00 € "
+    },
+    {
+        "Progetto": "P61",
+        "Regione": "Campania",
+        "Importo": " 3,310,826.00 € "
+    },
+    {
+        "Progetto": "P62",
+        "Regione": "Emilia-Romagna",
+        "Importo": " 3,158,997.00 € "
+    },
+    {
+        "Progetto": "P63",
+        "Regione": "Friuli-Venezia Giulia",
+        "Importo": " 2,161,038.00 € "
+    },
+    {
+        "Progetto": "P64",
+        "Regione": "Lazio",
+        "Importo": " 7,808,505.00 € "
+    },
+    {
+        "Progetto": "P65",
+        "Regione": "Liguria",
+        "Importo": " 3,878,323.00 € "
+    },
+    {
+        "Progetto": "P66",
+        "Regione": "Lombardia",
+        "Importo": " 9,755,499.00 € "
+    },
+    {
+        "Progetto": "P67",
+        "Regione": "Marche",
+        "Importo": " 1,211,870.00 € "
+    }
+]
