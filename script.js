@@ -1,125 +1,208 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const map = document.getElementById("italy-map");
-    const infoBox = document.getElementById("info-box");
+    let projectsData = [];
+    const selectedRegions = new Set();
 
-    // The fetch() method starts the process of fetching a resource from a server
-    // upload the SVG file
+    function loadProjectsData() {
+        fetch("test1.json")
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Error loading projects data: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                projectsData = data;
+                console.log("Projects data loaded successfully", projectsData);
+            })
+            .catch(error => {
+                console.error("Failed to load projects data:", error);
+                document.getElementById("projects-list").innerHTML = 
+                    "<li>Errore nel caricamento dei dati dei progetti</li>";
+            });
+    }
+
+    function displayProjectsForSelectedRegions() {
+        const projectsList = document.getElementById("projects-list");
+        projectsList.innerHTML = ""; // Clear the list first
+
+        if (selectedRegions.size === 0) {
+            projectsList.innerHTML = "<li>Seleziona almeno una regione per visualizzare i progetti</li>";
+            return;
+        }
+
+        const projectsByRegion = {};
+
+        selectedRegions.forEach(region => {
+            const regionProjects = projectsData.filter(project => project.Regione === region);
+            if (regionProjects.length > 0) {
+                projectsByRegion[region] = regionProjects;
+            }
+        });
+
+        if (Object.keys(projectsByRegion).length === 0) {
+            projectsList.innerHTML = "<li>Nessun progetto trovato per le regioni selezionate</li>";
+            return;
+        }
+
+        Object.keys(projectsByRegion).sort().forEach(region => {
+            const regionHeader = document.createElement("h3");
+            regionHeader.textContent = region;
+            projectsList.appendChild(regionHeader);
+
+            const regionList = document.createElement("ul");
+            projectsByRegion[region].forEach(project => {
+                const li = document.createElement("li");
+                li.innerHTML = `<strong>${project.Progetto}</strong>: €${project.Importo}`;
+                regionList.appendChild(li);
+            });
+
+            projectsList.appendChild(regionList);
+        });
+    }
+
+    function setupRegionInteractions(regions) {
+        regions.forEach((region, index) => {
+            if (!region.id) {
+                region.id = `region-${index + 1}`;
+            }
+
+            // Try to get the region name from title element, data-name attribute, or id
+            const title = region.querySelector("title");
+            const regionName = region.getAttribute("data-name") || 
+                              (title ? title.textContent : null) || 
+                              region.id || "Regione";
+            
+            // Set data-name attribute if not present
+            if (!region.getAttribute("data-name")) {
+                region.setAttribute("data-name", regionName);
+            }
+
+            region.setAttribute("fill", "#7cb4e3");
+            region.setAttribute("stroke", "#ffffff");
+            region.setAttribute("stroke-width", "1");
+            region.classList.add("region");
+
+            region.addEventListener("mouseover", function() {
+                this.setAttribute("fill", "#1e62d0");
+            });
+
+            region.addEventListener("mouseout", function() {
+                if (!this.classList.contains("selected")) {
+                    this.setAttribute("fill", "#7cb4e3");
+                }
+            });
+
+            region.addEventListener("click", function(e) {
+                const regionName = this.getAttribute("data-name") || 
+                                 (this.querySelector("title") ? this.querySelector("title").textContent : null) || 
+                                 this.id || "Regione";
+                console.log(`Click su: ${regionName}`);
+
+                if (this.classList.contains("selected")) {
+                    this.classList.remove("selected");
+                    this.setAttribute("fill", "#7cb4e3");
+                    selectedRegions.delete(regionName);
+                } else {
+                    this.classList.add("selected");
+                    this.setAttribute("fill", "#ff3333");
+                    selectedRegions.add(regionName);
+                }
+
+                this.classList.add("animating");
+                setTimeout(() => {
+                    this.classList.remove("animating");
+                }, 300);
+
+                reorderRegions();
+                displayProjectsForSelectedRegions();
+            });
+        });
+    }
+
+    function reorderRegions() {
+        const svg = document.querySelector("#italy-map-svg");
+        if (!svg) {
+            console.error("ERRORE: SVG non trovato per il riordinamento");
+            return;
+        }
+
+        const regions = svg.querySelectorAll(".region");
+        const parent = regions[0]?.parentNode;
+
+        if (!parent) {
+            console.error("ERRORE: Parent node non trovato");
+            return;
+        }
+
+        Array.from(regions)
+            .filter(r => !r.classList.contains("selected"))
+            .forEach(region => parent.appendChild(region));
+
+        Array.from(regions)
+            .filter(r => r.classList.contains("selected"))
+            .forEach(region => parent.appendChild(region));
+    }
+
+    loadProjectsData();
+
+    // Load the SVG map
     fetch("assets/italia.svg")
         .then(response => {
             if (!response.ok) {
-    // The throw statement allows you to create a custom error
                 throw new Error(`Error during SVG File fetching: ${response.status}`);
             }
             return response.text();
         })
         .then(svgContent => {
-    //        console.log("SVG uploaded correctly");
-            
-            // insert SVG in the container (containers are elements that contain other elements)
             const container = document.getElementById("map-container");
-            // in the SVG file there is a ID tag and a Name (of the Region) tag, better use the second one to be visualised
-            
             container.innerHTML = svgContent;
             const svg = container.querySelector("svg");
-            // the querySelector() method returns the first element that matches a specified CSS selector(s) in the document
             if (!svg) {
                 throw new Error(`SVG not found in the container with ID: ${container.id}`);
             }
-            
+
             svg.setAttribute("width", "100%");
-            
-            // Styles importing
+            svg.id = "italy-map-svg";
+
             const styleElement = document.createElement("style");
-            styleElement.textContent = 
-            `
+            styleElement.textContent = `
+                .region {
+                    transition: fill 0.2s ease-in-out, stroke-width 0.2s ease-in-out;
+                }
+                
                 .region:hover {
-                    fill: #6ce65a !important;
+                    fill:rgba(0, 123, 255, 0.5) !important;
                     stroke-width: 1.5px;
-                    transform: translateY(-10px);
-                    transition: transform 0.3s ease-in-out;
+                    cursor: pointer;
                 }
-                
+
                 .region.selected {
-                    fill: #41974e !important;
+                    fill:rgb(0, 123, 255) !important;
                     stroke: #222;
-                    stroke-width: 3px;
+                    stroke-width: 2px;
                 }
-                
+
                 .region.animating {
                     animation: gentlePulse 0.3s ease-in-out;
-                }                
-            // test scale HERE    
+                }
 
                 @keyframes gentlePulse {
                     0% { transform: scale(1); }
-                    50% { transform: scale(1.04); }
+                    50% { transform: scale(1.03); }
                     100% { transform: scale(1); }
                 }
             `;
             svg.appendChild(styleElement);
-            
-            // Select the regions
-            // Path is a SVG element that is used to draw lines, shapes or outlines (the region borders)
+
             const regions = svg.querySelectorAll("path");
             console.log(`Trovate ${regions.length} regioni nell'SVG`);
-            // setup the interactions for the regions (regions are from a reliable source, no need to check for null)
             setupRegionInteractions(regions);
-            }
-        )
-    
-    // configuration of the interactions for the regions
-    function setupRegionInteractions(regions) {
-        regions.forEach((region, index) => {
-            // Assicurati che ogni regione abbia un ID
-            if (!region.id) {
-                region.id = `region-${index + 1}`;
-            }
-            // color settings
-            region.setAttribute("fill", "#41974e");
-            region.setAttribute("stroke", "#ffffff");
-            region.setAttribute("stroke-width", "1");
-            // adding class to the region in order to style it
-            region.classList.add("region");
-            
-            // Hover effect setup, "mouseover" and "mouseout" are events that are triggered when the mouse is over or out of an element
-            region.addEventListener("mouseover", function() {
-            // || means "or", if the first condition is false, the second one is checked
-                const regionName = this.getAttribute("name") 
-            // || this.querySelector("title")?.textContent || this.getAttribute("id") || "Regione";     (not sure is necessary due to reliable mapping)
-                infoBox.textContent = regionName;
-            // fill "hovered" with a color
-                this.setAttribute("fill", "#6ce65a");
-            });
-            
-            region.addEventListener("mouseout", function() {
-                infoBox.textContent = "Seleziona una regione";
-                if (!this.classList.contains("selected")) {
-                    this.setAttribute("fill", "#41974e");
-                }
-            });
-            
-            // Selection effect setup, "click" is an event that is triggered when the mouse is clicked on an element
-            region.addEventListener("click", function(e) {
-                const regionName = this.getAttribute("name")
-            // || this.querySelector("title")?.textContent || this.getAttribute("id") || "Regione";
-
-                // Toggle selected class
-                if (this.classList.contains("selected")) {
-                    this.classList.remove("selected");
-                    this.setAttribute("fill", "#41974e");
-                } else {
-                    this.classList.add("selected");
-                    this.setAttribute("fill", "#41974e");
-                }
-                
-                // temporarily add a class to animate the selection
-                this.classList.add("animating");
-                
-                // remove animating class after a short delay (in millisecnods)
-                setTimeout(() => {
-                    this.classList.remove("animating");
-                }, 300);
-            });
+        })
+        .catch(error => {
+            console.error(`ERRORE: ${error.message}`);
+            document.getElementById("map-container").innerHTML = 
+                `<div style="color: red; padding: 20px;">
+                    Errore nel caricamento della mappa: ${error.message}
+                </div>`;
         });
-        }
-    });
+});
