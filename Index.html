@@ -3,26 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mappa Interattiva Italia - Versione 1</title>
+    <title>Mappa Interattiva Iniziative di sistema PNRR</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Mappa Interattiva</h1>
+    <h1>Iniziative di sistema PNRR</h1>
     
     <div class="content-wrapper">
+        <!-- Map Section -->
         <div class="map-section">
             <div id="map-container">
+                <!-- SVG will be loaded here -->
             </div>
         </div>
-        
-        <div class="projects-section">
-            <div id="projects-container">
-                <h2>Progetti per la Regione Selezionata</h2>
-                <ul id="projects-list"></ul>
+
+        <!-- Right Section -->
+        <div class="right-section">
+            <!-- Projects Section -->
+            <div class="projects-section">
+                <div id="projects-container">
+                    <h2>Progetti per la Regione Selezionata</h2>
+                    <ul id="projects-list"></ul>
+                </div>
+            </div>
+
+            <!-- Controls Section -->
+            <div class="map-controls-section">
+                <div class="controls-container">
+                    <button id="select-all-btn" class="control-btn">Seleziona Tutto</button>
+                    <button id="deselect-all-btn" class="control-btn">Deseleziona Tutto</button>
+                    <h3>Selettore Misure</h3>
+                        <div class="checkbox-wrapper-34">
+                            <input class="tgl tgl-ios" id="toggle-PE" type="checkbox">
+                            <label class="tgl-btn" for="toggle-PE"></label>
+                            <span class="toggle-text">Filtra i Partenariati Estesi</span>
+                        </div>
+                        <div class="checkbox-wrapper-34">
+                            <input class="tgl tgl-ios" id="toggle-CN" type="checkbox">
+                            <label class="tgl-btn" for="toggle-CN"></label>
+                            <span class="toggle-text">Filtra i Centri Nazionali</span>
+                        </div>
+                        <div class="checkbox-wrapper-34">
+                            <input class="tgl tgl-ios" id="toggle-ECS" type="checkbox">
+                            <label class="tgl-btn" for="toggle-ECS"></label>
+                            <span class="toggle-text">Filtra gli Ecosistemi dell'Innovazione</span>
+                        </div>
+                </div>
             </div>
         </div>
     </div>
     
-    <script src="script.js"></script>
+    <script src="script.js" defer></script>
 </body>
-</html>
+
+<style>
+
