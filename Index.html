@@ -1,60 +1,494 @@
+
+Index · HTML
+Copia
+
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mappa Interattiva Iniziative di sistema PNRR</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Mappa interattiva delle iniziative di sistema PNRR per regione" />
+  <title>Mappa Interattiva Iniziative di sistema PNRR</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── Design Tokens ─────────────────────────────────────────── */
+    :root {
+      --bg:           #0d1117;
+      --surface:      #161b22;
+      --surface-2:    #1c2330;
+      --border:       rgba(255,255,255,0.07);
+      --accent:       #2de2b8;
+      --accent-dim:   rgba(45,226,184,0.15);
+      --accent-2:     #e85d7a;
+      --accent-3:     #f4a836;
+      --text:         #e6edf3;
+      --text-muted:   #7d8590;
+      --radius:       12px;
+      --radius-sm:    6px;
+      --transition:   0.22s cubic-bezier(0.4,0,0.2,1);
+      --font-display: 'DM Serif Display', Georgia, serif;
+      --font-body:    'DM Sans', system-ui, sans-serif;
+    }
+
+    /* ─── Reset & Base ───────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { height: 100%; scroll-behavior: smooth; }
+
+    body {
+      min-height: 100vh;
+      background-color: var(--bg);
+      background-image:
+        radial-gradient(ellipse 80% 60% at 15% 0%, rgba(45,226,184,0.06) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 85% 100%, rgba(232,93,122,0.05) 0%, transparent 55%);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 15px;
+      line-height: 1.6;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* ─── Header ─────────────────────────────────────────────────── */
+    header {
+      width: 100%;
+      padding: 2.5rem 3rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      border-bottom: 1px solid var(--border);
+      animation: fadeDown 0.5s ease both;
+    }
+
+    header .eyebrow {
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    h1 {
+      font-family: var(--font-display);
+      font-size: clamp(1.6rem, 3vw, 2.6rem);
+      font-weight: 400;
+      line-height: 1.15;
+      color: var(--text);
+    }
+
+    h1 em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    /* ─── Layout ─────────────────────────────────────────────────── */
+    .content-wrapper {
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: 1.5rem;
+      width: 100%;
+      max-width: 1400px;
+      padding: 2rem 3rem;
+      flex: 1;
+      animation: fadeUp 0.5s 0.1s ease both;
+    }
+
+    /* ─── Map Section ────────────────────────────────────────────── */
+    .map-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      position: relative;
+      min-height: 580px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .map-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 70% 50% at 50% 30%, rgba(45,226,184,0.04), transparent);
+      pointer-events: none;
+    }
+
+    #map-container {
+      width: 100%;
+      height: 100%;
+      min-height: 580px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    /* SVG region styling — apply to the SVG loaded dynamically */
+    #map-container svg {
+      width: 100%;
+      height: auto;
+      max-height: 560px;
+    }
+
+    #map-container svg path,
+    #map-container svg polygon,
+    #map-container svg g[data-region] {
+      fill: var(--surface-2);
+      stroke: rgba(45,226,184,0.25);
+      stroke-width: 1;
+      cursor: pointer;
+      transition: fill var(--transition), stroke var(--transition), filter var(--transition);
+    }
+
+    #map-container svg path:hover,
+    #map-container svg g[data-region]:hover {
+      fill: var(--accent-dim);
+      stroke: var(--accent);
+      filter: drop-shadow(0 0 8px rgba(45,226,184,0.3));
+    }
+
+    #map-container svg path.selected,
+    #map-container svg g[data-region].selected {
+      fill: rgba(45,226,184,0.22);
+      stroke: var(--accent);
+      stroke-width: 1.5;
+    }
+
+    /* Placeholder when SVG not loaded */
+    .map-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      color: var(--text-muted);
+    }
+
+    .map-placeholder svg { opacity: 0.3; }
+
+    /* ─── Right Panel ─────────────────────────────────────────────── */
+    .right-section {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    /* ─── Card base ──────────────────────────────────────────────── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      transition: border-color var(--transition);
+    }
+
+    .card:hover { border-color: rgba(255,255,255,0.12); }
+
+    /* ─── Projects Section ──────────────────────────────────────── */
+    .projects-section { flex: 1; }
+
+    .card-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+
+    .card h2 {
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 1.25rem;
+      line-height: 1.3;
+    }
+
+    #projects-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      max-height: 320px;
+      overflow-y: auto;
+      padding-right: 0.25rem;
+    }
+
+    #projects-list::-webkit-scrollbar { width: 4px; }
+    #projects-list::-webkit-scrollbar-track { background: transparent; }
+    #projects-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+    #projects-list li {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.75rem 1rem;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      transition: border-color var(--transition), color var(--transition);
+      cursor: default;
+    }
+
+    #projects-list li:hover {
+      border-color: rgba(45,226,184,0.3);
+      color: var(--text);
+    }
+
+    .projects-empty {
+      color: var(--text-muted);
+      font-size: 0.875rem;
+      font-style: italic;
+      padding: 0.5rem 0;
+    }
+
+    /* ─── Controls Section ──────────────────────────────────────── */
+    .controls-container { display: flex; flex-direction: column; gap: 1rem; }
+
+    .controls-container h3 {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: 1rem;
+      color: var(--text);
+      margin-bottom: 0.25rem;
+    }
+
+    .btn-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.6rem;
+    }
+
+    .control-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-muted);
+      font-family: var(--font-body);
+      font-size: 0.8rem;
+      font-weight: 500;
+      padding: 0.6rem 1rem;
+      cursor: pointer;
+      transition: background var(--transition), border-color var(--transition), color var(--transition);
+      letter-spacing: 0.03em;
+    }
+
+    .control-btn:hover {
+      background: var(--accent-dim);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .control-btn:active { transform: scale(0.97); }
+
+    /* ─── Divider ─────────────────────────────────────────────────── */
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 0.25rem 0;
+    }
+
+    /* ─── Toggle Switches ────────────────────────────────────────── */
+    .toggle-group { display: flex; flex-direction: column; gap: 0.75rem; }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .toggle-text {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      transition: color var(--transition);
+      flex: 1;
+    }
+
+    /* iOS-style toggle */
+    .tgl { display: none; }
+
+    .tgl + .tgl-btn {
+      outline: 0;
+      display: block;
+      width: 38px;
+      height: 22px;
+      position: relative;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .tgl + .tgl-btn::after,
+    .tgl + .tgl-btn::before {
+      position: absolute;
+      display: block;
+      content: "";
+      transition: all var(--transition);
+    }
+
+    .tgl + .tgl-btn::before {
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 2em;
+    }
+
+    .tgl + .tgl-btn::after {
+      top: 3px;
+      left: 3px;
+      width: 16px;
+      height: 16px;
+      background: var(--text-muted);
+      border-radius: 50%;
+    }
+
+    .tgl:checked + .tgl-btn::before {
+      background: var(--accent-dim);
+      border-color: var(--accent);
+    }
+
+    .tgl:checked + .tgl-btn::after {
+      left: 19px;
+      background: var(--accent);
+    }
+
+    /* Accent colors per toggle */
+    #toggle-PE:checked + .tgl-btn::before { background: rgba(232,93,122,0.15); border-color: var(--accent-2); }
+    #toggle-PE:checked + .tgl-btn::after  { background: var(--accent-2); }
+
+    #toggle-CN:checked + .tgl-btn::before { background: rgba(244,168,54,0.15); border-color: var(--accent-3); }
+    #toggle-CN:checked + .tgl-btn::after  { background: var(--accent-3); }
+
+    /* Highlight label when checked */
+    .toggle-row:has(.tgl:checked) .toggle-text { color: var(--text); }
+
+    /* Color dots for legend */
+    .toggle-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .dot-pe  { background: var(--accent-2); }
+    .dot-cn  { background: var(--accent-3); }
+    .dot-ecs { background: var(--accent); }
+
+    /* ─── Animations ─────────────────────────────────────────────── */
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─── Responsive ─────────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      header { padding: 1.75rem 1.5rem 1.25rem; }
+
+      .content-wrapper {
+        grid-template-columns: 1fr;
+        padding: 1.5rem;
+      }
+
+      .map-section { min-height: 380px; }
+      #map-container { min-height: 380px; }
+    }
+  </style>
 </head>
 <body>
-    <h1>Iniziative di sistema PNRR</h1>
-    
-    <div class="content-wrapper">
-        <!-- Map Section -->
-        <div class="map-section">
-            <div id="map-container">
-                <!-- SVG will be loaded here -->
-            </div>
-        </div>
 
-        <!-- Right Section -->
-        <div class="right-section">
-            <!-- Projects Section -->
-            <div class="projects-section">
-                <div id="projects-container">
-                    <h2>Progetti per la Regione Selezionata</h2>
-                    <ul id="projects-list"></ul>
-                </div>
+  <header>
+    <p class="eyebrow">Piano Nazionale di Ripresa e Resilienza</p>
+    <h1>Iniziative di sistema <em>PNRR</em></h1>
+  </header>
+
+  <div class="content-wrapper">
+
+    <!-- ── Map Section ─────────────────────────────────────────── -->
+    <section class="map-section" aria-label="Mappa interattiva delle regioni italiane">
+      <div id="map-container">
+        <!-- Placeholder visibile finché il JS non carica l'SVG -->
+        <div class="map-placeholder" role="status" aria-live="polite">
+          <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24"
+               fill="none" stroke="currentColor" stroke-width="1.2">
+            <path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3V6z"/>
+            <line x1="9" y1="3" x2="9" y2="18"/>
+            <line x1="15" y1="6" x2="15" y2="21"/>
+          </svg>
+          <span>Caricamento mappa…</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Right Panel ─────────────────────────────────────────── -->
+    <div class="right-section">
+
+      <!-- Projects -->
+      <div class="card projects-section" role="region" aria-labelledby="projects-heading">
+        <p class="card-label">Dettaglio</p>
+        <h2 id="projects-heading">Progetti per la Regione Selezionata</h2>
+        <ul id="projects-list" aria-live="polite" aria-label="Lista progetti">
+          <li class="projects-empty">Seleziona una regione sulla mappa per visualizzare i progetti.</li>
+        </ul>
+      </div>
+
+      <!-- Controls -->
+      <div class="card map-controls-section" role="region" aria-label="Controlli mappa e filtri">
+        <div class="controls-container">
+
+          <div class="btn-row">
+            <button id="select-all-btn" class="control-btn" aria-label="Seleziona tutte le regioni">
+              Seleziona Tutto
+            </button>
+            <button id="deselect-all-btn" class="control-btn" aria-label="Deseleziona tutte le regioni">
+              Deseleziona Tutto
+            </button>
+          </div>
+
+          <div class="divider"></div>
+
+          <h3>Selettore Misure</h3>
+
+          <div class="toggle-group">
+
+            <div class="toggle-row">
+              <span class="toggle-dot dot-pe" aria-hidden="true"></span>
+              <input class="tgl tgl-ios" id="toggle-PE" type="checkbox"
+                     aria-label="Filtra i Partenariati Estesi" role="switch">
+              <label class="tgl-btn" for="toggle-PE"></label>
+              <span class="toggle-text">Partenariati Estesi</span>
             </div>
 
-            <!-- Controls Section -->
-            <div class="map-controls-section">
-                <div class="controls-container">
-                    <button id="select-all-btn" class="control-btn">Seleziona Tutto</button>
-                    <button id="deselect-all-btn" class="control-btn">Deseleziona Tutto</button>
-                    <h3>Selettore Misure</h3>
-                        <div class="checkbox-wrapper-34">
-                            <input class="tgl tgl-ios" id="toggle-PE" type="checkbox">
-                            <label class="tgl-btn" for="toggle-PE"></label>
-                            <span class="toggle-text">Filtra i Partenariati Estesi</span>
-                        </div>
-                        <div class="checkbox-wrapper-34">
-                            <input class="tgl tgl-ios" id="toggle-CN" type="checkbox">
-                            <label class="tgl-btn" for="toggle-CN"></label>
-                            <span class="toggle-text">Filtra i Centri Nazionali</span>
-                        </div>
-                        <div class="checkbox-wrapper-34">
-                            <input class="tgl tgl-ios" id="toggle-ECS" type="checkbox">
-                            <label class="tgl-btn" for="toggle-ECS"></label>
-                            <span class="toggle-text">Filtra gli Ecosistemi dell'Innovazione</span>
-                        </div>
-                </div>
+            <div class="toggle-row">
+              <span class="toggle-dot dot-cn" aria-hidden="true"></span>
+              <input class="tgl tgl-ios" id="toggle-CN" type="checkbox"
+                     aria-label="Filtra i Centri Nazionali" role="switch">
+              <label class="tgl-btn" for="toggle-CN"></label>
+              <span class="toggle-text">Centri Nazionali</span>
             </div>
+
+            <div class="toggle-row">
+              <span class="toggle-dot dot-ecs" aria-hidden="true"></span>
+              <input class="tgl tgl-ios" id="toggle-ECS" type="checkbox"
+                     aria-label="Filtra gli Ecosistemi dell'Innovazione" role="switch">
+              <label class="tgl-btn" for="toggle-ECS"></label>
+              <span class="toggle-text">Ecosistemi dell'Innovazione</span>
+            </div>
+
+          </div>
         </div>
-    </div>
-    
-    <script src="script.js" defer></script>
+      </div>
+
+    </div><!-- /.right-section -->
+  </div><!-- /.content-wrapper -->
+
+  <script src="script.js" defer></script>
+
 </body>
-
-<style>
-
+</html>
